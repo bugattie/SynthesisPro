@@ -1,9 +1,14 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+}
 .anchor {
   color: #222633;
   display: flex;
   justify-content: right;
   align-items: center;
-  margin-top: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
   font-size: 16px;
 }
 .anchor:visited {
@@ -11,4 +16,11 @@
 }
 .anchor:hover {
   color: #69b1ff;
+}
+
+@media (max-width: 600px) {
+  .container {
+    max-width: 100%;
+    padding: 0 12px;
+  }
 }

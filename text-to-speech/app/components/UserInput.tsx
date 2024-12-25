@@ -51,40 +51,37 @@ const UserInput = () => {
   return (
     <>
       {contextHolder}
-      <Form
-        form={form} // Bind the form instance to the Form component
-        layout="vertical"
-        onFinish={handleSubmit}
-        style={{ maxWidth: 600, margin: "0 auto" }}
-      >
-        <Form.Item
-          label="What's your name?"
-          name="name"
-          rules={[{ required: true, message: "Please enter your name!" }]}
-        >
-          <Input placeholder="Enter your name" />
-        </Form.Item>
-        <Form.Item
-          label="Text to Synthesize"
-          name="text"
-          rules={[{ required: true, message: "Please enter the text!" }]}
-        >
-          <Input.TextArea
-            placeholder="Enter the text you want to synthesize"
-            rows={4}
-          />
-        </Form.Item>
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            loading={loading}
-            disabled={loading}
-            block
+      <div className={styles.container}>
+        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+          <Form.Item
+            label="What's your name?"
+            name="name"
+            rules={[{ required: true, message: "Please enter your name!" }]}
           >
-            Synthesize
-          </Button>
-        </Form.Item>
+            <Input placeholder="Enter your name" />
+          </Form.Item>
+          <Form.Item
+            label="Text to Synthesize"
+            name="text"
+            rules={[{ required: true, message: "Please enter the text!" }]}
+          >
+            <Input.TextArea
+              placeholder="Enter the text you want to synthesize"
+              rows={4}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              disabled={loading}
+              block
+            >
+              Synthesize
+            </Button>
+          </Form.Item>
+        </Form>
         <a
           href="https://www.linkedin.com/in/mohsin-sheikhani-31655b195/"
           target="_blank"
@@ -93,7 +90,7 @@ const UserInput = () => {
         >
           👉 Follow me on LinkedIn 👈
         </a>
-      </Form>
+      </div>
     </>
   );
 };
