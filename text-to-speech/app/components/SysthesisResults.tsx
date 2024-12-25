@@ -20,7 +20,7 @@ const SysthesisResults = () => {
       setLoading(true);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/synthesis-results`
+        `${process.env.NEXT_PUBLIC_API_URL}/synthesis-results`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch synthesis results");
