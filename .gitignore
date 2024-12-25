@@ -3,6 +3,7 @@
 # dependencies
 text-to-speech/node_modules
 sam-app/synthesize/node_modules
+sam-app/.aws-sam
 text-to-speech/.pnp
 text-to-speech.pnp.*
 text-to-speech/.yarn/*

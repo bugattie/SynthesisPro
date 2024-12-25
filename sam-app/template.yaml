@@ -26,8 +26,8 @@ Resources:
       CodeUri: synthesize/
       Handler: app.lambdaHandler
       Runtime: nodejs22.x
-      MemorySize: 512
-      Timeout: 30
+      MemorySize: 256
+      Timeout: 10
       Policies:
         - AWSLambdaBasicExecutionRole
         - Statement:
@@ -65,6 +65,43 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - app.ts
+
+  FetchMetadataFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: synthesize/
+      Handler: fetchSynthesisResults.lambdaHandler
+      Runtime: nodejs22.x
+      MemorySize: 512
+      Timeout: 30
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:Query
+                - dynamodb:Scan
+              Resource: !GetAtt MetadataTable.Arn
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref MetadataTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SynthesizeApi
+            Path: /synthesis-results
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+          - fetchSynthesisResults.ts
 
   OutputBucket:
     Type: AWS::S3::Bucket
@@ -113,10 +150,10 @@ Resources:
         SSEEnabled: true
 
 Outputs:
-  SynthesizeFunction:
-    Description: Synthesize Lambda Function ARN
-    Value: !GetAtt SynthesizeFunction.Arn
-
   ApiUrl:
     Description: "URL for invoking the API Gateway"
     Value: !Sub "https://${SynthesizeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/synthesize"
+
+  FecthApiUrl:
+    Description: "URL for invoking the API Gateway"
+    Value: !Sub "https://${SynthesizeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/synthesis-results"
