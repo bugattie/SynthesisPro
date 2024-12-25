@@ -3,6 +3,8 @@
 import { Button, Form, Input, message } from "antd";
 import { useState } from "react";
 
+import styles from "./userinput.module.css";
+
 const UserInput = () => {
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
@@ -83,6 +85,14 @@ const UserInput = () => {
             Synthesize
           </Button>
         </Form.Item>
+        <a
+          href="https://www.linkedin.com/in/mohsin-sheikhani-31655b195/"
+          target="_blank"
+          rel="noreferrer"
+          className={styles.anchor}
+        >
+          👉 Follow me on LinkedIn 👈
+        </a>
       </Form>
     </>
   );

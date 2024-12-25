@@ -26,7 +26,7 @@ Resources:
       CodeUri: synthesize/
       Handler: app.lambdaHandler
       Runtime: nodejs22.x
-      MemorySize: 256
+      MemorySize: 512
       Timeout: 10
       Policies:
         - AWSLambdaBasicExecutionRole
@@ -73,7 +73,7 @@ Resources:
       Handler: fetchSynthesisResults.lambdaHandler
       Runtime: nodejs22.x
       MemorySize: 512
-      Timeout: 30
+      Timeout: 10
       Policies:
         - AWSLambdaBasicExecutionRole
         - Statement:

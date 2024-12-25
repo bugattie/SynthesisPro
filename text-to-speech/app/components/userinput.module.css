@@ -1,0 +1,14 @@
+.anchor {
+  color: #222633;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  margin-top: 1rem;
+  font-size: 16px;
+}
+.anchor:visited {
+  color: #222633;
+}
+.anchor:hover {
+  color: #69b1ff;
+}
