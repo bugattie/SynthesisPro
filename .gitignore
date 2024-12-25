@@ -1,0 +1,42 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+text-to-speech/node_modules
+sam-app/synthesize/node_modules
+text-to-speech/.pnp
+text-to-speech.pnp.*
+text-to-speech/.yarn/*
+text-to-speech/!.yarn/patches
+text-to-speech/!.yarn/plugins
+text-to-speech/!.yarn/releases
+text-to-speech/!.yarn/versions
+
+# testing
+text-to-speech/coverage
+
+# next.js
+text-to-speech/.next/
+text-to-speech/out/
+
+# production
+text-to-speech/build
+
+# misc
+text-to-speech/.DS_Store
+text-to-speech/*.pem
+
+# debug
+text-to-speech/npm-debug.log*
+text-to-speech/yarn-debug.log*
+text-to-speech/yarn-error.log*
+text-to-speech/.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+text-to-speech/.env
+
+# vercel
+text-to-speech/.vercel
+
+# typescript
+text-to-speech/*.tsbuildinfo
+text-to-speech/next-env.d.ts

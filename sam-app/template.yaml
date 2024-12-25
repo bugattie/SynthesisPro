@@ -1,0 +1,122 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Description: A Lambda function integrated with Amazon Polly, S3, and DynamoDB
+
+Globals:
+  Function:
+    Timeout: 30
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+  SynthesizeApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: "SynthesizeApi"
+      StageName: "Prod"
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'content-type'"
+        AllowOrigin: "'*'"
+
+  SynthesizeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: synthesize/
+      Handler: app.lambdaHandler
+      Runtime: nodejs22.x
+      MemorySize: 512
+      Timeout: 30
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Statement:
+            - Effect: Allow
+              Action:
+                - polly:SynthesizeSpeech
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+                - s3:PutObjectAcl
+              Resource: !Sub "${OutputBucket.Arn}/*"
+            - Effect: Allow
+              Action:
+                - dynamodb:PutItem
+              Resource: !GetAtt MetadataTable.Arn
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          OUTPUT_BUCKET: !Ref OutputBucket
+          DYNAMODB_TABLE: !Ref MetadataTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SynthesizeApi
+            Path: /synthesize
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+          - app.ts
+
+  OutputBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Sub "speech-output-bucket-${AWS::Region}"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: false
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: false
+
+  OutputBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref OutputBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: "s3:GetObject"
+            Resource: !Sub "${OutputBucket.Arn}/*"
+
+  MetadataTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Delete
+    Properties:
+      TableName: !Sub "speech-metadata-table"
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: createdAt
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: createdAt
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      SSESpecification:
+        SSEEnabled: true
+
+Outputs:
+  SynthesizeFunction:
+    Description: Synthesize Lambda Function ARN
+    Value: !GetAtt SynthesizeFunction.Arn
+
+  ApiUrl:
+    Description: "URL for invoking the API Gateway"
+    Value: !Sub "https://${SynthesizeApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/synthesize"
